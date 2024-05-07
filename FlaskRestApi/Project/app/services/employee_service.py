@@ -105,3 +105,45 @@ class EmployeeService:
         except Exception as e:
             return jsonify({'status': '1', 'message': f'{e}'})
 
+    @staticmethod
+    def search_text(collection, search_query):
+
+        if not search_query:
+            return jsonify({'message': 'No search query provided',
+                            'status': '1', 'status_code': f'{400}'})
+        # Perform search based on the query using MongoDB
+        employees = collection.find({'empRole': {'$regex': f'{search_query}', '$options': 'i'}})
+        search_results = []
+        if employees:
+            for employee in employees:
+                search_results.append({
+                    '_id': str(employee['_id']),
+                    'empId': employee['empId'],
+                    'empName': employee['empName'],
+                    'empRole': employee['empRole'],
+                    'empSalary': employee['empSalary']
+                })
+        return jsonify(search_results)
+
+
+    @staticmethod
+    def dynamic_search_text(collection, search_query, field_name):
+        if not search_query:
+            return jsonify({'message': 'No search query provided',
+                            'status': '1', 'status_code': f'{400}'})
+        employees = collection.find({f'{field_name}': {'$regex': f'{search_query}', '$options': 'i'}})
+        search_results = []
+        if employees:
+            for employee in employees:
+                search_results.append({
+                    '_id': str(employee['_id']),
+                    'empId': employee['empId'],
+                    'empName': employee['empName'],
+                    'empRole': employee['empRole'],
+                    'empSalary': employee['empSalary']
+                })
+        return jsonify(search_results)
+
+
+
+

@@ -51,3 +51,17 @@ def update_employee(Id):
 def remove_employee(Id):
     result = EmployeeService.remove_employee(collection, Id)
     return result
+
+@employee_bp.route('/search', methods=['GET'])
+def search_text():
+    # Parse query parameters from the request
+    search_query = request.args.get('query')
+    # print(search_query)
+    result = EmployeeService.search_text(collection, search_query)
+    return result
+
+@employee_bp.route('/dynamicsearch/<field_name>', methods=['GET'])
+def dynamic_search_text(field_name):
+    search_query = request.args.get('query')
+    result = EmployeeService.dynamic_search_text(collection, search_query, field_name)
+    return result
